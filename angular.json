@@ -25,7 +25,8 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [],
+            "scripts": ["src/assets/js/APIBluetooth.js"],
+
             "es5BrowserSupport": true
           },
           "configurations": {

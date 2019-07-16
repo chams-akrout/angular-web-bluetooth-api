@@ -1,0 +1,16 @@
+.btnS {
+    position: relative;
+        display: block;
+        width: 15%;
+        height: 10%;
+        left: 15%;
+        margin-top: 50px;
+        background: #2E8B57 !important;
+        border: 1px solid rgb(0, 0, 0);
+        box-shadow: 2px;
+        color: rgb(39, 32, 32)!important;
+       }
+       .alert{
+        color: rgb(255, 0, 0)!important;
+       
+       }

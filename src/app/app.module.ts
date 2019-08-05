@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule,ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
+import { WebBluetoothModule} from '@manekinekko/angular-web-bluetooth';
 @NgModule({
   declarations: [
     AppComponent
@@ -12,7 +12,8 @@ import { AppComponent } from './app.component';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    WebBluetoothModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

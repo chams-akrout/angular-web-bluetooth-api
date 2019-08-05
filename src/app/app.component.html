@@ -1,28 +1,44 @@
-<div style="text-align:center">
- 
+<div style="text-align:left">
+
   <button (click)="connect()" class="btn btn-primary">Connect</button>
 
 </div>
+<div class="btnD" style="text-align:left">
 
-<form (ngSubmit)="sendM" [formGroup]="sendMessageForm">
-  <div class="input-field col s12">
-   
-    <label for="mesId">Your Message</label>
-    <input id="mesId" type="text" required formControlName="message">
+  <button (click)="disConnect()">Disconnect</button>
 
-    <div
-      *ngIf="sendMessageForm.controls.message.invalid && (sendMessageForm.controls.message.dirty || sendMessageForm.controls.message.touched)">
+</div>
+<div class="msg">
+  <form (ngSubmit)="sendM()" [formGroup]="sendMessageForm">
+    <div class="input-field col s12">
 
-      <div *ngIf="sendMessageForm.controls.message.errors.required" class="alert alert-danger ">
-        Message is required.
+      <label for="mesId">Your Message</label> <br>
+      <input id="mesId" type="text" required formControlName="message" class="textF">
+
+      <div
+        *ngIf="sendMessageForm.controls.message.invalid && (sendMessageForm.controls.message.dirty || sendMessageForm.controls.message.touched)">
+
+        <div *ngIf="sendMessageForm.controls.message.errors.required" class="alert alert-danger ">
+          Message is required.
+        </div>
+      </div>
+      <div class="col s12 ">
+        <button type="submit" class="btnS btn-primary left" [disabled]="!(sendMessageForm.valid)"
+          [ngClass]="{'disabled': !(sendMessageForm.valid)}">
+          Send Message
+        </button>
       </div>
     </div>
-    <div class="col s12 ">
-      <button type="submit" class="btn btn-primary left" [disabled]="!(sendMessageForm.valid)"
-        [ngClass]="{'disabled': !(sendMessageForm.valid)}">
-        Send Message
-      </button>
-    </div>
-  </div>
-</form>
+  </form>
+</div>
+<div>
+  <button type="submit" class="btnS btn-primary left" (click)="receiveM()" >
+  Received Messages
+</button>
+</div>
+<div id="msgR">
+
+</div>
+
+
 <router-outlet></router-outlet>

@@ -1,3 +1,5 @@
+
+
 let deviceCache = null;
 function connectjs() {
 
@@ -22,6 +24,16 @@ function requestBluetoothDevice() {
 
       return deviceCache;
     });
+}
+function handleDisconnection(event) {
+  let device = event.target;
+
+  console.log('"' + device.name +
+    '" bluetooth device disconnected, trying to reconnect...');
+
+  connectDeviceAndCacheCharacteristic(device).
+    then(characteristic => startNotifications(characteristic)).
+    catch(error => console.log(error));
 }
 
 let characteristicCache = null;
@@ -55,44 +67,82 @@ function connectDeviceAndCacheCharacteristic(device) {
 
 function startNotifications(characteristic) {
   console.log('Starting notifications...');
-
   return characteristic.startNotifications().
-      then(() => {
-        console.log('Notifications started');
-      });
+    then(() => {
+      console.log('Notifications started');
+
+      // characteristic.addEventListener('characteristicvaluechanged',
+      //   handleCharacteristicValueChanged);
+    });
+
 }
 
 
 
+function disconnect() {
+  if (deviceCache) {
+    console.log('Disconnecting from "' + deviceCache.name + '" bluetooth device...');
+    deviceCache.removeEventListener('gattserverdisconnected',
+      handleDisconnection);
+
+    if (deviceCache.gatt.connected) {
+      deviceCache.gatt.disconnect();
+      console.log('"' + deviceCache.name + '" bluetooth device disconnected');
+    }
+    else {
+      console.log('"' + deviceCache.name +
+        '" bluetooth device is already disconnected');
+    }
+  }
+
+  if (characteristicCache) {
+    // characteristicCache.removeEventListener('characteristicvaluechanged',
+    //   handleCharacteristicValueChanged);
+    characteristicCache = null;
+  }
+  deviceCache = null;
+}
+
+let decoder = new TextDecoder('utf-8');
+var tab = new Array();
+let characteristic;
+let array = new Array();
 
 
+function writeToCharacteristic(characteristic, data) {
+  encodedData = new TextEncoder().encode(data);
+  characteristic.writeValue(encodedData);
+  return characteristic;
+}
 
+function send(data) {
+  var val = String(data);
+  tab.push(val);
+  if (!data || !characteristicCache) {
+    console.log("something happened");
+    return;
+  }
+  characteristic = writeToCharacteristic(characteristicCache, tab);
 
+read();
 
-  //   navigator.bluetooth.requestDevice({
-  //    acceptAllDevices: true,
-  //    optionalServices: ['0000180f-0000-1000-8000-00805f9b34fb']
-  //  })
-  //    .then(device =>device.gatt.connect()
-  //    )
-  //    .then(server =>server.getPrimaryService
-  //      ('battery_service')
-  //    )
-  //    .then(async service => {
-  //      try {
-  //        return Promise.all([
-  //          service.getCharacteristic('battery_level')
-  //            .then(characteristic => {
-  //              return characteristic.readValue();
-  //            })
-  //            .then(value => {
-  //              console.log(value.getUint8(0));
-  //            })
-  //        ]);
-  //      }
-  //      catch (error) {
-  //        console.log("error: ", error);
-  //      }
+}
 
+function read() {
+  msgR = document.getElementById("msgR");
+  characteristic.readValue().then(value => {
+    array = decoder.decode(value).split(",");
+    //localStorage.setItem('msg', array);
+  });
+}
 
-  //    })
+function receive() {
+   //msgR.innerHTML = localStorage.getItem('msg');
+  //msgR.innerHTML=array.length;
+  for (var i = 0; i < array.length; i = i + 1) {
+    console.log('Msg ' + i + ': ' + array[i]);
+    msgR.innerHTML+="<br />" +array[i];
+  }
+
+}
+
